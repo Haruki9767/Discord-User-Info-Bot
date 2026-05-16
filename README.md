@@ -23,15 +23,7 @@ A lightweight Discord utility bot with slash commands that work in servers, DMs,
 - **Language:** Python
 - **Library:** [discord.py](https://github.com/Rapptz/discord.py)
 - **Command Type:** Slash commands via `app_commands`
-- **Hosting:** Runs on any platform that supports Python + environment variables
-
----
-
-## 
-### 3. Run the bot
-```bash
-python bot.py
-```
+- **Hosting:** Runs on any platform that supports Python + environmen
 
 ---
 
