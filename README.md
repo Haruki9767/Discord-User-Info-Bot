@@ -1,6 +1,6 @@
 # 🐼 Panda Bot
 
-A lightweight Discord utility bot with slash commands that work in servers, DMs, and private channels. All responses are ephemeral — only the user who runs the command can see them.
+A lightweight Discord utility bot with slash commands that work in servers, DMs, and private channels. All responses are ephemeral,i.e, only the user who runs the command can see them.
 
 ---
 
