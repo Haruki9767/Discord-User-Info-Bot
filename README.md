@@ -36,4 +36,4 @@ A lightweight Discord utility bot with slash commands that work in servers, DMs,
 ---
 
 
-Made by **Panda** — [Portfolio](https://panda-404.netlify.app/)
+Made by **Lime** — [Portfolio](https://lime.is-a.dev/)
