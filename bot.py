@@ -8,16 +8,6 @@ import os
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# Helper
-def user_app():
-    #Decorator shorthand
-    def decorator(func):
-        func = app_commands.allowed_installs(guilds=True, users=True)(func)
-        func = app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)(func)
-        return func
-    return decorator
-
-
 # bot ready
 @bot.event
 async def on_ready():
@@ -55,6 +45,8 @@ async def userid(interaction: discord.Interaction, user: discord.User = None):
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @app_commands.describe(user="The user to look up (leave blank for yourself)")
 async def userinfo(interaction: discord.Interaction, user: discord.User = None):
+    await interaction.response.defer(ephemeral=True, thinking=True)
+
     # Fetch full user object to get banner/accent color
     target_id = (user or interaction.user).id
     try:
@@ -97,7 +89,7 @@ async def userinfo(interaction: discord.Interaction, user: discord.User = None):
         inline=False,
     )
 
-    # Nitro User id
+    # Nitro indicators are hints only, not proof of an active subscription.
     has_animated_av = target.display_avatar.is_animated()
     has_banner      = target.banner is not None
     nitro_hints = []
@@ -153,7 +145,7 @@ async def userinfo(interaction: discord.Interaction, user: discord.User = None):
         embed.add_field(name="Badges", value="\n".join(badges), inline=False)
 
     embed.set_footer(text="Made by Lime • [Portfolio](https://lime.is-a.dev/)")
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    await interaction.edit_original_response(embed=embed)
 
 
 # Get a user's avatar
@@ -172,7 +164,7 @@ async def avatar(interaction: discord.Interaction, user: discord.User = None):
     else:
         links += f" • [WebP]({av.replace(format='webp').url})"
     embed.add_field(name="Download", value=links)
-    embed.set_footer(text="Made by Panda • [Portfolio](https://panda-404.netlify.app/)")
+    embed.set_footer(text="Made by Lime • [Portfolio](https://lime.is-a.dev/)")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -181,7 +173,7 @@ async def avatar(interaction: discord.Interaction, user: discord.User = None):
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @app_commands.describe(
-    year="Year (e.g. 2025)",
+    year="Four-digit year (UTC)",
     month="Month (1–12)",
     day="Day (1–31)",
     hour="Hour in 24h format (0–23, default 0)",
@@ -216,7 +208,7 @@ async def timestamp(
     for label, (rendered, code) in styles.items():
         embed.add_field(name=label, value=f"{rendered}\n{code}", inline=True)
 
-    embed.set_footer(text="Made by Panda • [Portfolio](https://panda-404.netlify.app/)")
+    embed.set_footer(text="Made by Lime • [Portfolio](https://lime.is-a.dev/)")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -232,7 +224,7 @@ async def ping(interaction: discord.Interaction):
         description=f"{bar} **{latency}ms** WebSocket latency",
         color=0x57F287 if latency < 100 else 0xFEE75C if latency < 250 else 0xED4245,
     )
-    embed.set_footer(text="Made by Panda • [Portfolio](https://panda-404.netlify.app/)")
+    embed.set_footer(text="Made by Lime • [Portfolio](https://lime.is-a.dev/)")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -249,16 +241,15 @@ async def shortcuts(interaction: discord.Interaction):
     embed.add_field(
         name="Desktop Keyboard Shortcuts",
         value=(
-            "`Ctrl+K` — Quick switcher (jump to channel/DM)\n"
             "`Ctrl+/` — Show all shortcuts\n"
+            "`Ctrl+K` — Quick switcher (jump to channel/DM)\n"
+            "`Ctrl+F` — Search the current channel\n"
+            "`Ctrl+E` — Open the emoji picker\n"
             "`Ctrl+Shift+M` — Toggle mute\n"
             "`Ctrl+Shift+D` — Toggle deafen\n"
             "`Alt+↑/↓` — Navigate channels\n"
-            "`Ctrl+Shift+Alt+↑/↓` — Navigate unread channels\n"
-            "`Esc` — Mark channel as read\n"
-            "`Shift+Esc` — Mark all as read\n"
-            "`Ctrl+E` — Open emoji picker\n"
-            "`↑` (in chat) — Edit last message"
+            "`Esc` — Cancel a message or mark the channel as read\n"
+            "`Shift+↑` (Windows) / `Option+↑` (Mac) — Edit your last message"
         ),
         inline=False,
     )
@@ -271,8 +262,8 @@ async def shortcuts(interaction: discord.Interaction):
             "`__underline__` → underline\n"
             "`~~strikethrough~~` → ~~strikethrough~~\n"
             "`||spoiler||` → spoiler tag\n"
-            "`\`code\`` → inline code\n"
-            "` ```lang ``` ` → code block\n"
+            "Inline code: surround text with one backtick on each side\n"
+            "Code block: surround text with three backticks on each side\n"
             "`> text` → block quote\n"
             "`### heading` → large heading"
         ),
@@ -298,8 +289,8 @@ async def shortcuts(interaction: discord.Interaction):
             "• Click a reaction to add yours\n"
             "• Hold `Shift` when clicking ✉️ to reply ping-free\n"
             "• `@silent` at the start of a message = no notification\n"
-            "• Star ⭐ a message to save it (right-click → Star)\n"
-            "• Right-click your avatar → **Set Status** quickly"
+            "• Right-click a message → **Bookmark Message** (availability is limited)\n"
+            "• Right-click your avatar → **Set Status**"
         ),
         inline=False,
     )
@@ -314,7 +305,7 @@ async def shortcuts(interaction: discord.Interaction):
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 async def help_cmd(interaction: discord.Interaction):
     embed = discord.Embed(
-        title="🐼 Panda Bot — Commands",
+        title="🍋 Lime Bot — Commands",
         description="All responses are **ephemeral** (only you can see them).",
         color=0x5865F2,
     )
@@ -329,15 +320,19 @@ async def help_cmd(interaction: discord.Interaction):
     ]
     for name, icon, desc in commands_list:
         embed.add_field(name=f"{icon} `{name}`", value=desc, inline=False)
-    embed.set_footer(text="Made by Panda • [Portfolio](https://panda-404.netlify.app/)")
+    embed.set_footer(text="Made by Lime • [Portfolio](https://lime.is-a.dev/)")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 #######
 
 
-TOKEN = os.environ.get("DISCORD_TOKEN")
-if not TOKEN:
-    raise ValueError("DISCORD_TOKEN environment variable not set!")
+def main():
+    token = os.environ.get("DISCORD_TOKEN")
+    if not token:
+        raise SystemExit("DISCORD_TOKEN environment variable is not set")
+    bot.run(token)
 
-bot.run(TOKEN)
+
+if __name__ == "__main__":
+    main()
