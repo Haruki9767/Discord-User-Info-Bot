@@ -23,16 +23,16 @@ def user_app():
 async def on_ready():
     try:
         synced = await bot.tree.sync()
-        print(f"✅ Synced {len(synced)} command(s)")
+        print(f"Synced {len(synced)} command(s)")
     except Exception as e:
-        print(f"❌ Sync failed: {e}")
+        print(f"Sync failed: {e}")
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
 
 
 # Get a user's Discord ID 
 
-@bot.tree.command(name="userid", description="📋 Shows a user's Discord ID")
+@bot.tree.command(name="userid", description="Shows a user's Discord ID")
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @app_commands.describe(user="The user to get the ID of (leave blank for yourself)")
@@ -45,12 +45,12 @@ async def userid(interaction: discord.Interaction, user: discord.User = None):
         color=0x5865F2,
     )
     embed.set_thumbnail(url=target.display_avatar.url)
-    embed.set_footer(text="Made by Panda • [Portfolio](https://panda-404.netlify.app/)")
+    embed.set_footer(text="Made by Lime • [Portfolio](https://lime.is-a.dev/)")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 # Get a user information
-@bot.tree.command(name="userinfo", description="🪪 Shows info about a Discord user")
+@bot.tree.command(name="userinfo", description="Shows info about a Discord user")
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @app_commands.describe(user="The user to look up (leave blank for yourself)")
@@ -80,19 +80,19 @@ async def userinfo(interaction: discord.Interaction, user: discord.User = None):
     embed.set_thumbnail(url=target.display_avatar.url)
 
     # Identity
-    embed.add_field(name="🏷️ Username",        value=f"`{target.name}`",               inline=True)
-    embed.add_field(name="✨ Display Name",     value=f"`{target.display_name}`",        inline=True)
+    embed.add_field(name="Username",        value=f"`{target.name}`",               inline=True)
+    embed.add_field(name="Display Name",     value=f"`{target.display_name}`",        inline=True)
     # Global name (pomelo system) differs from display_name only for legacy users
     global_name = target.global_name or "—"
-    embed.add_field(name="🌐 Global Name",      value=f"`{global_name}`",                inline=True)
+    embed.add_field(name="Global Name",      value=f"`{global_name}`",                inline=True)
 
-    embed.add_field(name="🆔 User ID",          value=f"`{target.id}`",                  inline=True)
-    embed.add_field(name="🤖 Bot Account",      value="Yes ✅" if target.bot else "No ❌", inline=True)
-    embed.add_field(name="⚙️ System Account",   value="Yes ✅" if target.system else "No ❌", inline=True)
+    embed.add_field(name="User ID",          value=f"`{target.id}`",                  inline=True)
+    embed.add_field(name="Bot Account",      value="Yes" if target.bot else "No", inline=True)
+    embed.add_field(name="⚙️ System Account",   value="Yes" if target.system else "No", inline=True)
 
     # Account Created
     embed.add_field(
-        name="📅 Account Created",
+        name="Account Created",
         value=f"<t:{created_ts}:F>\n<t:{created_ts}:R> *(account is {age_str} old)*",
         inline=False,
     )
@@ -102,24 +102,24 @@ async def userinfo(interaction: discord.Interaction, user: discord.User = None):
     has_banner      = target.banner is not None
     nitro_hints = []
     if has_animated_av:
-        nitro_hints.append("Animated avatar 🎞️")
+        nitro_hints.append("Animated avatar")
     if has_banner:
-        nitro_hints.append("Profile banner 🖼️")
+        nitro_hints.append("Profile banner")
     nitro_value = ", ".join(nitro_hints) if nitro_hints else "No indicators detected"
-    embed.add_field(name="💎 Nitro Indicators", value=nitro_value, inline=False)
+    embed.add_field(name="Nitro Indicators", value=nitro_value, inline=False)
 
     # Banner
     if target.banner:
         embed.set_image(url=target.banner.url)
         embed.add_field(
-            name="🎨 Banner",
+            name="Banner",
             value=f"[PNG]({target.banner.replace(format='png', size=1024).url})"
                   + (f" • [GIF]({target.banner.replace(format='gif', size=1024).url})" if target.banner.is_animated() else ""),
             inline=True,
         )
     if target.accent_color:
         hex_color = f"#{target.accent_color.value:06X}"
-        embed.add_field(name="🎨 Accent Color", value=f"`{hex_color}`", inline=True)
+        embed.add_field(name="Accent Color", value=f"`{hex_color}`", inline=True)
 
     # Avatar Urls
     av = target.display_avatar
@@ -131,33 +131,33 @@ async def userinfo(interaction: discord.Interaction, user: discord.User = None):
         else f"[PNG]({av.replace(format='png', size=1024).url}) • "
              f"[WebP]({av.replace(format='webp', size=1024).url})"
     )
-    embed.add_field(name="🖼️ Avatar Links", value=av_links, inline=False)
+    embed.add_field(name="Avatar Links", value=av_links, inline=False)
 
     # badges (might not work properly)
     flags = target.public_flags
     flag_map = {
-        "staff":                  "👾 Discord Staff",
-        "partner":                "🤝 Partnered Server Owner",
-        "hypesquad":              "🏠 HypeSquad Events",
-        "bug_hunter":             "🐛 Bug Hunter",
-        "hypesquad_bravery":      "🦁 HypeSquad Bravery",
-        "hypesquad_brilliance":   "🌟 HypeSquad Brilliance",
-        "hypesquad_balance":      "⚖️ HypeSquad Balance",
-        "early_supporter":        "🌅 Early Supporter",
-        "bug_hunter_level_2":     "🐛🥇 Bug Hunter Level 2",
-        "verified_bot_developer": "🔧 Verified Bot Developer",
-        "active_developer":       "🛠️ Active Developer",
+        "staff":                  "Discord Staff",
+        "partner":                "Partnered Server Owner",
+        "hypesquad":              "HypeSquad Events",
+        "bug_hunter":             "Bug Hunter",
+        "hypesquad_bravery":      "HypeSquad Bravery",
+        "hypesquad_brilliance":   "HypeSquad Brilliance",
+        "hypesquad_balance":      "HypeSquad Balance",
+        "early_supporter":        "Early Supporter",
+        "bug_hunter_level_2":     "Bug Hunter Level 2",
+        "verified_bot_developer": "Verified Bot Developer",
+        "active_developer":       "Active Developer",
     }
     badges = [lbl for attr, lbl in flag_map.items() if getattr(flags, attr, False)]
     if badges:
-        embed.add_field(name="🏅 Badges", value="\n".join(badges), inline=False)
+        embed.add_field(name="Badges", value="\n".join(badges), inline=False)
 
-    embed.set_footer(text="Made by Panda • [Portfolio](https://panda-404.netlify.app/)")
+    embed.set_footer(text="Made by Lime • [Portfolio](https://lime.is-a.dev/)")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 # Get a user's avatar
-@bot.tree.command(name="avatar", description="🖼️ Get a user's avatar")
+@bot.tree.command(name="avatar", description="Get a user's avatar")
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @app_commands.describe(user="The user whose avatar to fetch (leave blank for yours)")
@@ -177,7 +177,7 @@ async def avatar(interaction: discord.Interaction, user: discord.User = None):
 
 
 # Timestamp
-@bot.tree.command(name="timestamp", description="⏱️ Convert a date to Discord timestamp format")
+@bot.tree.command(name="timestamp", description="Convert a date to Discord timestamp format")
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @app_commands.describe(
@@ -198,7 +198,7 @@ async def timestamp(
     try:
         dt = datetime.datetime(year, month, day, hour, minute, tzinfo=datetime.timezone.utc)
     except ValueError as e:
-        await interaction.response.send_message(f"❌ Invalid date: `{e}`", ephemeral=True)
+        await interaction.response.send_message(f"Invalid date: `{e}`", ephemeral=True)
         return
 
     ts = int(dt.timestamp())
@@ -221,7 +221,7 @@ async def timestamp(
 
 
 #Ping
-@bot.tree.command(name="ping", description="🏓 Check the bot's response latency")
+@bot.tree.command(name="ping", description="Check the bot's response latency")
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 async def ping(interaction: discord.Interaction):
@@ -237,17 +237,17 @@ async def ping(interaction: discord.Interaction):
 
 
 # Shortcuts
-@bot.tree.command(name="shortcuts", description="⌨️ Useful Discord keyboard shortcuts & markdown tips")
+@bot.tree.command(name="shortcuts", description="Useful Discord keyboard shortcuts & markdown tips")
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 async def shortcuts(interaction: discord.Interaction):
     embed = discord.Embed(
-        title="⌨️ Discord Shortcuts & Tips",
+        title="Discord Shortcuts & Tips",
         color=0x5865F2,
     )
 
     embed.add_field(
-        name="🖥️ Desktop Keyboard Shortcuts",
+        name="Desktop Keyboard Shortcuts",
         value=(
             "`Ctrl+K` — Quick switcher (jump to channel/DM)\n"
             "`Ctrl+/` — Show all shortcuts\n"
@@ -264,7 +264,7 @@ async def shortcuts(interaction: discord.Interaction):
     )
 
     embed.add_field(
-        name="✍️ Text Markdown",
+        name="Text Markdown",
         value=(
             "`**bold**` → **bold**\n"
             "`*italic*` → *italic*\n"
@@ -280,7 +280,7 @@ async def shortcuts(interaction: discord.Interaction):
     )
 
     embed.add_field(
-        name="🔖 Timestamp Format",
+        name="Timestamp Format",
         value=(
             "Use `/timestamp` to generate these.\n"
             "`<t:UNIX:t>` Short Time\n"
@@ -304,12 +304,12 @@ async def shortcuts(interaction: discord.Interaction):
         inline=False,
     )
 
-    embed.set_footer(text="Made by Panda • [Portfolio](https://panda-404.netlify.app/)")
+    embed.set_footer(text="Made by Lime • [Portfolio](https://lime.is-a.dev/)")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 # Help
-@bot.tree.command(name="help", description="❓ List all available bot commands")
+@bot.tree.command(name="help", description="List all available bot commands")
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 async def help_cmd(interaction: discord.Interaction):
@@ -338,6 +338,6 @@ async def help_cmd(interaction: discord.Interaction):
 
 TOKEN = os.environ.get("DISCORD_TOKEN")
 if not TOKEN:
-    raise ValueError("❌ DISCORD_TOKEN environment variable not set!")
+    raise ValueError("DISCORD_TOKEN environment variable not set!")
 
 bot.run(TOKEN)
